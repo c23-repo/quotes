@@ -6,6 +6,9 @@ public class Quotes {
 
     private String author;
     private String text;
+    private String quote;
+    private String character;
+
 
     public Quotes(String author, String text) {
         this.author = author;
@@ -13,10 +16,23 @@ public class Quotes {
     }
 
     public String toString(){
-        return String.format("Quote: %s - %s", this.text, this.author);
+        return String.format("Quote: %s \n- %s", this.text, this.author);
+    }
+
+    public String toString_API(){
+        return String.format("Quote: %s \n- %s", this.quote, this.character);
     }
 
     public String getAuthor() {
         return author;
+    }
+
+
+    public String getQuote() {
+        return quote;
+    }
+
+    public String getCharacter() {
+        return character;
     }
 }
