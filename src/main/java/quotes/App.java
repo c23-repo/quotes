@@ -4,11 +4,10 @@
 package quotes;
 
 import com.google.gson.Gson;
-import com.google.gson.stream.JsonReader;
 
-
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.Random;
 
 
@@ -17,22 +16,56 @@ public class App {
 
     public static void main(String[] args) throws FileNotFoundException {
 
-
-
-        System.out.println(new App().randoQuote());
+        System.out.println(generateRandomQuote(convertToQuoteClass(readFile
+                ("src/main/resources/allQuotes.json"))));
     }
 
-    public static Quotes randoQuote()throws FileNotFoundException{
-        String fileName = "assets/allQuotes.json";
+    public static String randomQuote(){
+        try{
+
+            URL url = new URL("https://ron-swanson-quotes.herokuapp.com/v2/quotes");
+            HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+
+            Gson iGson = new Gson();
+            Quotes gotQuote = iGson.fromJson(reader, Quotes.class);
+
+            Quotes newQuote = new Quotes(gotQuote.getCharacter(), gotQuote.getQuote());
+            String gotQuoteToJSON = iGson.toJson(newQuote);
+
+            generateRandomQuote(readFile(newQuote));
+
+            return gotQuote.toString_API();
+
+        } catch (Exception e){
+            System.out.println(e);
+
+        }
+    }
+
+    public static Reader readFile(String path){
+        try{
+            FileReader reader = new FileReader(path);
+            return reader;
+        } catch (FileNotFoundException e) {
+            System.out.println("File not found");
+            System.out.println(e);
+            return null;
+        }
+    }
+
+    public static Quotes[] convertToQuoteClass(Reader jsonReader){
 
         Gson gson = new Gson();
 
-            FileReader fileReader = new FileReader(fileName);
-            JsonReader reader = new JsonReader(fileReader);
-            Quotes[] data = gson.fromJson(reader, Quotes[].class);
-            Random random = new Random();
-            int pos = random.nextInt(data.length);
-            return data[pos];
+        Quotes[] quotesArr = gson.fromJson(jsonReader, Quotes[].class);
+        return quotesArr;
 
+    }
+
+    public static Quotes generateRandomQuote(Quotes[] data) {
+        Random random = new Random();
+        int pos = random.nextInt(data.length);
+        return data[pos];
     }
 }

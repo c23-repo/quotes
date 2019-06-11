@@ -7,8 +7,13 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class AppTest {
-    @Test public void testAppHasAGreeting() {
-        App classUnderTest = new App();
-        assertNotNull("app should have a greeting", classUnderTest.getGreeting());
+
+    @Test
+    public void readFileTest() {
+        App classTest = new App();
+        String path = "src/main/resources/allQuotes.json";
+        assertNotNull("Should return a string", classTest.readFile(path));
+
     }
+
 }
