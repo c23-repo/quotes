@@ -1,17 +1,21 @@
 package quotes;
 
 
+import java.util.ArrayList;
 
 public class Quotes {
 
     private String author;
-    private String text;
-    private String quote;
-    private String character;
+    public String text;
+
 
 
     public Quotes(String author, String text) {
         this.author = author;
+        this.text = text;
+    }
+
+    public Quotes(String text) {
         this.text = text;
     }
 
@@ -20,19 +24,7 @@ public class Quotes {
     }
 
     public String toString_API(){
-        return String.format("Quote: %s \n- %s", this.quote, this.character);
+        return String.format("Quote: %s \n- Ron Swanson", this.text);
     }
 
-    public String getAuthor() {
-        return author;
-    }
-
-
-    public String getQuote() {
-        return quote;
-    }
-
-    public String getCharacter() {
-        return character;
-    }
 }
