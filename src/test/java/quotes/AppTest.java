@@ -16,4 +16,10 @@ public class AppTest {
 
     }
 
+    @Test public void test_ronSwanson(){
+        App test = new App();
+        String exp = test.randomRonQuote();
+        assertNotNull("There is something in here",exp);
+    }
+
 }

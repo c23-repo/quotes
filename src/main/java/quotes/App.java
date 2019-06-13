@@ -16,30 +16,26 @@ public class App {
 
     public static void main(String[] args) throws FileNotFoundException {
 
+        System.out.println(randomRonQuote());
         System.out.println(generateRandomQuote(convertToQuoteClass(readFile
                 ("src/main/resources/allQuotes.json"))));
     }
 
-    public static String randomQuote(){
-        try{
-
+    public static String randomRonQuote(){
+        try {
             URL url = new URL("https://ron-swanson-quotes.herokuapp.com/v2/quotes");
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
-
-            Gson iGson = new Gson();
-            Quotes gotQuote = iGson.fromJson(reader, Quotes.class);
-
-            Quotes newQuote = new Quotes(gotQuote.getCharacter(), gotQuote.getQuote());
-            String gotQuoteToJSON = iGson.toJson(newQuote);
-
-            generateRandomQuote(readFile(newQuote));
-
-            return gotQuote.toString_API();
-
-        } catch (Exception e){
+            BufferedReader reader = new BufferedReader(new InputStreamReader((con.getInputStream())));
+            Gson gson = new Gson();
+            String[] ronSwanson = gson.fromJson(reader, String[].class);
+            Quotes ronSwan = new Quotes(ronSwanson[0]);
+            System.out.println("{\"text\": \"" + ronSwan.text + "\"}");
+            saveQuoteToFile("{\"text\": \"" + ronSwan.text + "\"}");
+            return ronSwan.toString_API();
+        }catch (IOException e){
+            System.out.println("Can't Get a quote from Ron");
             System.out.println(e);
-
+            return randomRonQuote();
         }
     }
 
@@ -67,5 +63,20 @@ public class App {
         Random random = new Random();
         int pos = random.nextInt(data.length);
         return data[pos];
+    }
+
+    protected static void saveQuoteToFile(String quoteAsString) {
+        try {
+            RandomAccessFile fileToRemoveLastLine = new RandomAccessFile("./src/main/resources/allQuotes.json", "rw");
+            long length = fileToRemoveLastLine.length();
+            fileToRemoveLastLine.setLength(length - 1);
+            fileToRemoveLastLine.close();
+            BufferedWriter writer = new BufferedWriter(
+                    new FileWriter("./src/main/resources/allQuotes.json", true));
+            writer.append(",\n" + quoteAsString + "\n]");
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
